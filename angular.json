@@ -30,10 +30,15 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/fullcalendar/dist/fullcalendar.min.css",
               "src/styles.less",
               "src/assets/fonts/pacifico-font.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/moment/min/moment.min.js",
+              "node_modules/fullcalendar/dist/fullcalendar.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -127,6 +132,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "WebProgrammingFront"
 }

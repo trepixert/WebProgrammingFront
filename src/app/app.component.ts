@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './landing-page/landing-page.component.html',
-  styleUrls: ['./landing-page/landing-page.component.less']
+  templateUrl: './calendar-page/calendar-page.component.html',
+  styleUrls: ['./calendar-page/calendar-page.component.less']
 })
 export class AppComponent {
   title = 'WebProgrammingFront';
+  calendarPlugins = [dayGridPlugin]; // important!
+
 }
