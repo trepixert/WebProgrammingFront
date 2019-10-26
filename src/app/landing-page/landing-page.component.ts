@@ -13,6 +13,6 @@ export class LandingPageComponent implements OnInit {
   }
 
   _scroll() {
-    console.log("hello");
+    console.log('hello');
   }
 }

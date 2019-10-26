@@ -3,11 +3,11 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './calendar-page/calendar-page.component.html',
-  styleUrls: ['./calendar-page/calendar-page.component.less']
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.less']
 })
 export class AppComponent {
   title = 'WebProgrammingFront';
-  calendarPlugins = [dayGridPlugin]; // important!
+  calendarPlugins = [dayGridPlugin];
 
 }

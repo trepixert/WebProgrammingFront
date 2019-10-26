@@ -7,6 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
     styleUrls: ['./calendar-page.component.less']
 })
 export class CalendarPageComponent implements OnInit {
-    calendarPlugins = [dayGridPlugin]; // important!
-    ngOnInit() {}
+    calendarPlugins = [dayGridPlugin];
+    ngOnInit() {
+    }
 }
