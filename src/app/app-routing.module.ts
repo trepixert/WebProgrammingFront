@@ -1,4 +1,3 @@
-import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
 
@@ -8,11 +7,11 @@ import {SignUpComponent} from './user/sign-up/sign-up.component';
 import {SignInComponent} from './user/sign-in/sign-in.component';
 import {AuthGuard} from './auth/auth.guard';
 import {CalendarPageComponent} from './calendar-page/calendar-page.component';
+import {NgModule} from '@angular/core';
 
-const routes: Routes = [
-    {path: 'home', component: CalendarPageComponent, canActivate: [AuthGuard]},
-    {path: 'auth', loadChildren: './auth/auth.module#AuthModule'},
+export const appRoutes: Routes = [
     {path: 'home', component: LandingPageComponent},
+    // {path: 'calendar', component: CalendarPageComponent, canActivate: [AuthGuard]},
     {path: 'calendar', loadChildren: './calendar-page/calendar-page.module#CalendarPageModule'},
     {
         path: 'signup', component: UserComponent,
@@ -33,9 +32,8 @@ const routes: Routes = [
         pathMatch: 'full'
     },
 ];
-
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forRoot(appRoutes)],
     exports: [RouterModule]
 })
 export class AppRoutingModule {

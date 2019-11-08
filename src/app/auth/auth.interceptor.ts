@@ -1,7 +1,7 @@
 import {HttpInterceptor, HttpRequest, HttpHandler, HttpUserEvent, HttpEvent} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import {UserService} from '../shared/user.service';
-import 'rxjs/add/operator/do';
+import {tap} from 'rxjs/internal/operators';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 
@@ -21,7 +21,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 headers: req.headers.set('Authorization', 'Bearer ' + localStorage.getItem('userToken'))
             });
             return next.handle(clonedreq)
-                .do(
+                .pipe(tap(
                     succ => {
                     },
                     err => {
@@ -29,7 +29,7 @@ export class AuthInterceptor implements HttpInterceptor {
                             this.router.navigateByUrl('/login');
                         }
                     }
-                );
+                ));
         } else {
             this.router.navigateByUrl('/login');
         }
