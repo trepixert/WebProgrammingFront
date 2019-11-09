@@ -15,7 +15,7 @@ import {SignUpComponent} from './user/sign-up/sign-up.component';
 import {RouterModule} from '@angular/router';
 import {AuthInterceptor} from './auth/auth.interceptor';
 import {AuthGuard} from './auth/auth.guard';
-import {UserService} from './shared/user.service';
+import {AuthService} from './auth/auth.service';
 
 @NgModule({
     declarations: [
@@ -36,7 +36,7 @@ import {UserService} from './shared/user.service';
     exports: [
         HeaderPageComponent,
     ],
-    providers: [UserService, AuthGuard, {
+    providers: [AuthService, AuthGuard, {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
             multi: true
