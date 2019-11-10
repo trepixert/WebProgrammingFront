@@ -1,10 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
-import {environment} from '../../environments/environment';
-import {TokenPair} from '../shared/auth.model';
-import * as moment from 'moment';
-import * as jwt_decode from 'jwt-decode';
+import {environment} from '../../../environments/environment';
+import {TokenPair} from '../models/auth.model';
 
 @Injectable()
 export class AuthService {
@@ -39,27 +37,13 @@ export class AuthService {
             );
     }
 
-    refresh() {
-        const refreshToken = localStorage.getItem('refreshToken');
-        return this.http
-            .post<TokenPair>(`${this.apiUrl}/auth/refresh`, {refreshToken}, this.httpOptions)
-            .pipe(
-                tap(val => this.setSession(val)),
-            );
-    }
-
     signOut() {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
     }
 
     isLoggedIn() {
-        return localStorage.getItem('accessToken') != null && !this.isExpired();
-    }
-
-    isExpired() {
-        const expiredAt = JSON.parse(localStorage.getItem('accessExpiredAt'));
-        return moment() >= moment(expiredAt);
+        return localStorage.getItem('accessToken') != null;
     }
 
 }

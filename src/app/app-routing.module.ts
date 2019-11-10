@@ -1,26 +1,14 @@
+import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-
+import {AuthModule} from './auth/auth.module';
 
 import {LandingPageComponent} from './landing-page/landing-page.component';
-import {UserComponent} from './user/user.component';
-import {SignUpComponent} from './user/sign-up/sign-up.component';
-import {SignInComponent} from './user/sign-in/sign-in.component';
-import {AuthGuard} from './auth/auth.guard';
-import {CalendarPageComponent} from './calendar-page/calendar-page.component';
-import {NgModule} from '@angular/core';
+import {AuthGuardService} from './auth/services/auth-guard.service';
 
-export const appRoutes: Routes = [
+const appRoutes: Routes = [
     {path: 'home', component: LandingPageComponent},
-    // {path: 'calendar', component: CalendarPageComponent, canActivate: [AuthGuard]},
-    {path: 'calendar', loadChildren: './calendar-page/calendar-page.module#CalendarPageModule'},
-    {
-        path: 'signup', component: UserComponent,
-        children: [{path: '', component: SignUpComponent}]
-    },
-    {
-        path: 'login', component: UserComponent,
-        children: [{path: '', component: SignInComponent}]
-    },
+    {path: 'calendar', loadChildren: () => import('./calendar-page/calendar-page.module').then(m => m.CalendarPageModule)},
+    {path: '', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
     {
         path: '',
         redirectTo: '/login',
@@ -32,9 +20,10 @@ export const appRoutes: Routes = [
         pathMatch: 'full'
     },
 ];
+
 @NgModule({
     imports: [RouterModule.forRoot(appRoutes)],
-    exports: [RouterModule]
+    exports: [RouterModule],
 })
 export class AppRoutingModule {
 }
