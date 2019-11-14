@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AuthModule} from './auth/auth.module';
+import {CalendarPageModule} from './calendar-page/calendar-page.module';
 
 import {LandingPageComponent} from './landing-page/landing-page.component';
 import {AuthGuardService} from './auth/services/auth-guard.service';

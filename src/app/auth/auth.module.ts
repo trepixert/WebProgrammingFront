@@ -7,6 +7,7 @@ import {SignInComponent} from './components/sign-in/sign-in.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {AuthInterceptor} from './interceptors/auth-interceptor';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -14,7 +15,7 @@ import {AuthInterceptor} from './interceptors/auth-interceptor';
     imports: [
         CommonModule,
         AuthRoutingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     providers: []
 })

@@ -1,37 +1,203 @@
-import {Component, OnInit} from '@angular/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import * as $ from 'jquery';
+import {
+    Component,
+    ChangeDetectionStrategy,
+    ViewChild,
+    TemplateRef,
+    OnInit
+} from '@angular/core';
+import {
+    startOfDay,
+    endOfDay,
+    subDays,
+    addDays,
+    endOfMonth,
+    isSameDay,
+    isSameMonth,
+    addHours
+} from 'date-fns';
+import {Subject} from 'rxjs';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {
+    CalendarEvent,
+    CalendarEventAction,
+    CalendarEventTimesChangedEvent,
+    CalendarView
+} from 'angular-calendar';
+import {EventService} from './service/event.service';
+import {Event} from './models/event.model';
+import {map} from 'rxjs/operators';
+import {StorageService} from './service/storage.service';
+import {RemoteFile} from './models/remote-file.model';
+
+const colors: any = {
+    red: {
+        primary: '#ad2121',
+        secondary: '#FAE3E3'
+    },
+    blue: {
+        primary: '#1e90ff',
+        secondary: '#D1E8FF'
+    },
+    yellow: {
+        primary: '#e3bc08',
+        secondary: '#FDF1BA'
+    }
+};
 
 @Component({
-    selector: 'app-calendar-page',
+    selector: 'app-test-calendar',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './calendar-page.component.html',
     styleUrls: ['./calendar-page.component.less']
 })
 export class CalendarPageComponent implements OnInit {
-    calendarPlugins = [dayGridPlugin];
-    ngOnInit() {
+    @ViewChild('modalContent', {static: true}) modalContent: TemplateRef<any>;
+
+    view: CalendarView = CalendarView.Month;
+
+    CalendarView = CalendarView;
+
+    viewDate: Date = new Date();
+
+    modalData: {
+        action: string;
+        event: CalendarEvent;
+    };
+
+    refresh: Subject<any> = new Subject();
+
+    events: CalendarEvent[];
+
+    files: RemoteFile[];
+
+    activeDayIsOpen = true;
+
+    constructor(private modal: NgbModal, private eventService: EventService, private storageService: StorageService) {
     }
 
-    eventClick(model) {
-        console.log(model);
+    dayClicked({date, events}: { date: Date; events: CalendarEvent[] }): void {
+        if (isSameMonth(date, this.viewDate)) {
+            this.activeDayIsOpen = !((isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
+                events.length === 0);
+            this.viewDate = date;
+        }
     }
 
-    eventRender(eventObj) {
-        /*console.log(eventObj.el);
-        const description = eventObj.description;
-/!*        const start = eventObj.start.toDate(undefined, undefined).toTimeString().substr(0, 5);
-        const end = eventObj.end.toDate(undefined, undefined).toTimeString().substr(0, 5);
-        const descriptionString = description + '\n С: ' + start + ' \n По: ' + end;*!/
-        eventObj.el.popover({
-            title: eventObj.title,
-            content: description,
-            trigger: 'hover',
-            placement: 'top',
-            container: 'body'
-        });*/
+    eventTimesChanged({
+                          event,
+                          newStart,
+                          newEnd
+                      }: CalendarEventTimesChangedEvent): void {
+        this.events = this.events.map(iEvent => {
+            if (iEvent === event) {
+                return {
+                    ...event,
+                    start: newStart,
+                    end: newEnd
+                };
+            }
+            return iEvent;
+        });
+        this.handleEvent('Dropped or resized', event);
     }
 
-    openModel() {
-        $('.modal').modal('show');
+    handleEvent(action: string, event: CalendarEvent): void {
+        this.modalData = {event, action};
+        this.modal.open(this.modalContent, {size: 'lg'});
+    }
+
+    addEvent(): void {
+        this.events = [
+            ...this.events,
+            {
+                title: 'New event',
+                start: startOfDay(new Date()),
+                end: endOfDay(new Date()),
+                color: colors.red,
+                draggable: true,
+                resizable: {
+                    beforeStart: true,
+                    afterEnd: true
+                }
+            }
+        ];
+        console.log(this.events);
+    }
+
+    private addNewEvent(id: string | number, title: string, start: Date, end: Date) {
+        this.events = [
+            ...this.events,
+            {
+                id,
+                title,
+                start: startOfDay(new Date(start)),
+                end: endOfDay(new Date(end)),
+                color: colors.red,
+            }
+        ];
+    }
+
+    setView(view: CalendarView) {
+        this.view = view;
+    }
+
+    closeOpenMonthViewDay() {
+        this.activeDayIsOpen = false;
+    }
+
+    /*TODO: при сохранении ивента, нужно вернуть её с сервера и обновить текущие значения (id)*/
+    commitEvent(event: CalendarEvent<any>) {
+        this.eventService.save(event.id, event.title, event.start, event.end)
+            .subscribe(() => {
+            });
+    }
+
+    deleteEvent(eventToDelete: CalendarEvent) {
+        this.eventService.delete(eventToDelete.id).subscribe(value => {
+        });
+        this.events = this.events.filter(event => event !== eventToDelete);
+    }
+
+    ngOnInit(): void {
+        this.events = [];
+        this.files = [];
+        this.eventService.getAll()
+            .subscribe(data => {
+                data.forEach(value => {
+                    this.addNewEvent(value.id, value.title, value.start, value.end);
+                });
+            });
+        this.storageService.getAll()
+            .subscribe(data => {
+                data.forEach(file => {
+                    this.addNewFile(file.eventId, file.url, file.filename);
+                });
+            });
+    }
+
+    /* TODO: при возврате дто шки с сервера нужно обновить текущий файл*/
+    onFileChoose(fileInput: any, id: string | number) {
+        const file = fileInput.target.files[0];
+        console.log(file);
+        this.storageService
+            .postFile(file, id)
+            .subscribe(remoteFile => {
+                this.addNewFile(remoteFile.eventId, remoteFile.url, remoteFile.filename);
+            });
+    }
+
+    getFilesByEvent(id: string | number) {
+        return this.files.filter(value => value.eventId == id);
+    }
+
+    private addNewFile(eventId: string | number, url: string, filename: string) {
+        this.files = [
+            ...this.files,
+            {
+                url,
+                filename,
+                eventId
+            }
+        ];
     }
 }
