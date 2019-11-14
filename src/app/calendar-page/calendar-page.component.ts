@@ -25,7 +25,7 @@ import {
 } from 'angular-calendar';
 import {EventService} from './service/event.service';
 import {Event} from './models/event.model';
-import {map} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {StorageService} from './service/storage.service';
 import {RemoteFile} from './models/remote-file.model';
 
@@ -68,9 +68,14 @@ export class CalendarPageComponent implements OnInit {
 
     events: CalendarEvent[];
 
+    eventsFoundByQuery: CalendarEvent[];
+
     files: RemoteFile[];
 
     activeDayIsOpen = true;
+
+    searchQuery: string;
+    queryChanged = new Subject<string>();
 
     constructor(private modal: NgbModal, private eventService: EventService, private storageService: StorageService) {
     }
@@ -148,12 +153,18 @@ export class CalendarPageComponent implements OnInit {
     /*TODO: при сохранении ивента, нужно вернуть её с сервера и обновить текущие значения (id)*/
     commitEvent(event: CalendarEvent<any>) {
         this.eventService.save(event.id, event.title, event.start, event.end)
-            .subscribe(() => {
+            .subscribe(value => {
+                if (value.statusText === 'Saved') {
+                    alert('Event has been saved');
+                }
             });
     }
 
     deleteEvent(eventToDelete: CalendarEvent) {
         this.eventService.delete(eventToDelete.id).subscribe(value => {
+            if (value.statusText === 'Deleted') {
+                alert('Event has been deleted');
+            }
         });
         this.events = this.events.filter(event => event !== eventToDelete);
     }
@@ -161,21 +172,44 @@ export class CalendarPageComponent implements OnInit {
     ngOnInit(): void {
         this.events = [];
         this.files = [];
-        this.eventService.getAll()
-            .subscribe(data => {
-                data.forEach(value => {
-                    this.addNewEvent(value.id, value.title, value.start, value.end);
-                });
-            });
+        this.findAllEvents();
         this.storageService.getAll()
             .subscribe(data => {
                 data.forEach(file => {
                     this.addNewFile(file.eventId, file.url, file.filename);
                 });
             });
+
+        this.queryChanged.pipe(
+            debounceTime(1000),
+            distinctUntilChanged())
+            .subscribe(title => this.eventService.search(title)
+                .subscribe(val => {
+                    this.events = [];
+                    val.forEach(value => {
+                        this.addNewEvent(value.id, value.title, value.start, value.end);
+                    });
+                }));
     }
 
-    /* TODO: при возврате дто шки с сервера нужно обновить текущий файл*/
+    private findAllEvents() {
+        this.eventService.getAll()
+            .subscribe(data => {
+                data.forEach(value => {
+                    this.addNewEvent(value.id, value.title, value.start, value.end);
+                });
+            });
+    }
+
+    changed(query: string) {
+        if (query.trim() === '') {
+            this.events = [];
+            this.findAllEvents();
+            return;
+        }
+        this.queryChanged.next(query);
+    }
+
     onFileChoose(fileInput: any, id: string | number) {
         const file = fileInput.target.files[0];
         console.log(file);
@@ -187,7 +221,7 @@ export class CalendarPageComponent implements OnInit {
     }
 
     getFilesByEvent(id: string | number) {
-        return this.files.filter(value => value.eventId == id);
+        return this.files.filter(value => value.eventId === id);
     }
 
     private addNewFile(eventId: string | number, url: string, filename: string) {

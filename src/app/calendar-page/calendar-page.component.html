@@ -94,6 +94,13 @@
 
 <br/><br/><br/>
 
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default">Поиск</span>
+    </div>
+    <input [ngModel]="searchQuery" (ngModelChange)="changed($event)" >
+</div>
+<div class="container mt-4" id="card-columns">
 <h3>
     Edit events
     <button class="btn btn-primary pull-right" (click)="addEvent()">
@@ -101,7 +108,6 @@
     </button>
     <div class="clearfix"></div>
 </h3>
-
 <div class="table-responsive">
     <table class="table table-bordered">
         <thead>
