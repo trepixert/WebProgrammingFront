@@ -1,31 +1,10 @@
-import {
-    Component,
-    ChangeDetectionStrategy,
-    ViewChild,
-    TemplateRef,
-    OnInit
-} from '@angular/core';
-import {
-    startOfDay,
-    endOfDay,
-    subDays,
-    addDays,
-    endOfMonth,
-    isSameDay,
-    isSameMonth,
-    addHours
-} from 'date-fns';
+import {ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {endOfDay, isSameDay, isSameMonth, startOfDay} from 'date-fns';
 import {Subject} from 'rxjs';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {
-    CalendarEvent,
-    CalendarEventAction,
-    CalendarEventTimesChangedEvent,
-    CalendarView
-} from 'angular-calendar';
+import {CalendarEvent, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {EventService} from './service/event.service';
-import {Event} from './models/event.model';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {StorageService} from './service/storage.service';
 import {RemoteFile} from './models/remote-file.model';
 
@@ -68,14 +47,13 @@ export class CalendarPageComponent implements OnInit {
 
     events: CalendarEvent[];
 
-    eventsFoundByQuery: CalendarEvent[];
-
     files: RemoteFile[];
 
     activeDayIsOpen = true;
 
     searchQuery: string;
     queryChanged = new Subject<string>();
+    private socket: WebSocket;
 
     constructor(private modal: NgbModal, private eventService: EventService, private storageService: StorageService) {
     }
@@ -150,11 +128,10 @@ export class CalendarPageComponent implements OnInit {
         this.activeDayIsOpen = false;
     }
 
-    /*TODO: при сохранении ивента, нужно вернуть её с сервера и обновить текущие значения (id)*/
     commitEvent(event: CalendarEvent<any>) {
         this.eventService.save(event.id, event.title, event.start, event.end)
             .subscribe(value => {
-                if (value.statusText === 'Saved') {
+                if (value.statusText === 'OK') {
                     alert('Event has been saved');
                 }
             });
@@ -162,7 +139,7 @@ export class CalendarPageComponent implements OnInit {
 
     deleteEvent(eventToDelete: CalendarEvent) {
         this.eventService.delete(eventToDelete.id).subscribe(value => {
-            if (value.statusText === 'Deleted') {
+            if (value.statusText === 'OK') {
                 alert('Event has been deleted');
             }
         });

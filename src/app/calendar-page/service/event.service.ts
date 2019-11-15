@@ -28,7 +28,7 @@ export class EventService {
     }
 
     delete(id: string | number): Observable<Response> {
-        return this.http.delete<Response>(this.apiUrl + `/events/delete/${id}/`, this.httpOptions);
+        return this.http.get<Response>(this.apiUrl + `/events/delete/${id}`, this.httpOptions);
     }
 
     search(query: string): Observable<CalendarEvent[]> {

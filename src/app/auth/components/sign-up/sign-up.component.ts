@@ -28,8 +28,12 @@ export class SignUpComponent {
         if (val.password && val.username) {
             this.authService.signUp(val.username, val.password)
                 .subscribe(
-                    () => {
-                        this.router.navigateByUrl('/login');
+                    (value) => {
+                        if (value.statusText === 'Saved') {
+                            this.router.navigateByUrl('/login');
+                        } else {
+                            alert('Ошибка!');
+                        }
                     }
                 );
         }

@@ -23,10 +23,7 @@ export class AuthService {
     signUp(username: string, password: string) {
         const events = [];
         return this.http
-            .post<TokenPair>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions)
-            .pipe(
-                tap(val => this.setSession(val)),
-            );
+            .post<Response>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions)
     }
 
     signIn(username: string, password: string) {
@@ -39,7 +36,6 @@ export class AuthService {
 
     signOut() {
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
     }
 
     isLoggedIn() {
