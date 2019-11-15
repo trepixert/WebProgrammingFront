@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
-import {environment} from '../../../environments/environment';
+import {apiUrl} from '../../../environments/environment';
 import {TokenPair} from '../models/auth.model';
 
 @Injectable()
 export class AuthService {
-    apiUrl = environment.apiUrl;
+    apiUrl = apiUrl;
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json'

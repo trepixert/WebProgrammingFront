@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {environment} from '../../../environments/environment';
+import {apiUrl} from '../../../environments/environment';
 import {CalendarEvent} from 'calendar-utils';
-import {Event} from '../models/event.model';
 
 @Injectable()
 export class EventService {
-    apiUrl = environment.apiUrl;
+    apiUrl = apiUrl;
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',
