@@ -7,7 +7,7 @@ export const environment = {
   apiUrl: 'https://web-programming-agliullin-back.herokuapp.com/',
 };
 export const production = false;
-export const apiUrl = 'http://localhost:8080';
+export const apiUrl = 'https://web-programming-agliullin-back.herokuapp.com';
 /*https://web-programming-agliullin-back.herokuapp.com*/
 /*
  * For easier debugging in development mode, you can import the following file
