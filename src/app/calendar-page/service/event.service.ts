@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {apiUrl} from '../../../environments/environment';
 import {CalendarEvent} from 'calendar-utils';
 
 @Injectable()
 export class EventService {
-    apiUrl = 'https://web-programming-agliullin-back.herokuapp.com';
+    apiUrl = apiUrl;
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json',

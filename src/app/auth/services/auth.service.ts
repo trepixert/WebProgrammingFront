@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
+import {apiUrl} from '../../../environments/environment';
 import {TokenPair} from '../models/auth.model';
 
 @Injectable()
 export class AuthService {
-    apiUrl = 'https://web-programming-agliullin-back.herokuapp.com';
+    apiUrl = apiUrl;
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json'
@@ -22,7 +23,7 @@ export class AuthService {
     signUp(username: string, password: string) {
         const events = [];
         return this.http
-            .post<Response>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions);
+            .post<Response>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions)
     }
 
     signIn(username: string, password: string) {
