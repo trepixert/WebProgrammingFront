@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080',
+  apiUrl: 'https://web-programming-agliullin-back.herokuapp.com/',
 };
 /*https://web-programming-agliullin-back.herokuapp.com*/
 /*

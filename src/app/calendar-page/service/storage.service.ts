@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {RemoteFile} from '../models/remote-file.model';
@@ -8,7 +7,7 @@ import {RemoteFile} from '../models/remote-file.model';
     providedIn: 'root'
 })
 export class StorageService {
-    private apiUrl = `${environment.apiUrl}/storage`;
+    private apiUrl = `https://web-programming-agliullin-back.herokuapp.com/storage`;
     private fileKey = 'file';
 
     httpOptions = {
