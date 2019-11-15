@@ -1,0 +1,18 @@
+<form class="col s12 white" [formGroup]="form" (ngSubmit)="signUp()">
+    <div class="row">
+        <div class="input-field col s6">
+            <input type="text" id="name" class="form-control" name="username" formControlName="username" required>
+            <label data-error="Required field!">Username</label>
+        </div>
+        <div class="input-field col s6">
+            <input type="password" id="password" class="form-control" name="password" formControlName="password">
+            <label data-error="Required field!">Password</label>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <button class="btn-large btn-submit" type="submit">Submit</button>
+        </div>
+    </div>
+</form>

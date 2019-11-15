@@ -1,0 +1,19 @@
+<form class="col s12 white" [formGroup]="form" (ngSubmit)="signIn()">
+    <div class="row">
+        <div class="input-field col s16">
+            <i class="material-icons prefix">account_circle</i>
+            <input type="text" ngModel name="username" formControlName="username" placeholder="Username" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">vpn_key</i>
+            <input type="password" ngModel name="password" formControlName="password" placeholder="Password" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col s12">
+            <button class="btn-large btn-submit" type="submit">Login</button>
+        </div>
+    </div>
+</form>
