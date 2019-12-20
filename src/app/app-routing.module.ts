@@ -8,7 +8,7 @@ import {AuthGuardService} from './auth/services/auth-guard.service';
 
 const appRoutes: Routes = [
     {path: 'home', component: LandingPageComponent},
-    {path: 'calendar', loadChildren: () => import('./calendar-page/calendar-page.module').then(m => m.CalendarPageModule)},
+    {path: 'calendar', loadChildren: () => import('./calendar-page/calendar-page.module').then(m => m.CalendarPageModule), canActivate: [AuthGuardService]},
     {path: '', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
     {
         path: '',

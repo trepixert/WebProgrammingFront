@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 
@@ -15,10 +15,18 @@ export class SignInComponent {
         private fb: FormBuilder,
         private authService: AuthService,
         private router: Router,
+        private route: ActivatedRoute
     ) {
         this.form = this.fb.group({
             password: ['', Validators.required],
             username: ['', Validators.required],
+        });
+        this.route.fragment.subscribe((fragment: string) => {
+            let accessToken = new URLSearchParams(fragment).get('access_token');
+            console.log(accessToken);
+            if (accessToken != null) {
+                this.logInByYandex(accessToken);
+            }
         });
     }
 
@@ -33,5 +41,16 @@ export class SignInComponent {
                     }
                 );
         }
+    }
+
+    loginByYandex() {
+        let url = 'https://oauth.yandex.ru/authorize?response_type=token&client_id=a1c9e82a15234011888448a61f831d80&force_confirm=yes';
+        window.location.href = url;
+    }
+
+    logInByYandex(accessToken) {
+        this.authService.LogInByYandex(accessToken).subscribe(() => {
+            this.router.navigate(['/home']);
+        });
     }
 }

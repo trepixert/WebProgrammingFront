@@ -11,15 +11,18 @@ import {LandingPageComponent} from './landing-page/landing-page.component';
 import {SharedModule} from './shared/shared.module';
 import {CommonModule} from '@angular/common';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { WebhookComponent } from './webhook/webhook.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         LandingPageComponent,
+        WebhookComponent,
     ],
     imports: [
         BrowserAnimationsModule,
         ReactiveFormsModule,
+        FormsModule,
         HttpClientModule,
         AppRoutingModule,
         SharedModule,

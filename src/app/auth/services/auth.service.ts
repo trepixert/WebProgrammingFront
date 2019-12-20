@@ -3,10 +3,13 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {tap} from 'rxjs/operators';
 import {apiUrl} from '../../../environments/environment';
 import {TokenPair} from '../models/auth.model';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class AuthService {
     apiUrl = apiUrl;
+    private _token = '';
+    private loginByYandexEndpoint = '/authenticate/yandex';
     httpOptions = {
         headers: new HttpHeaders({
             'Content-Type': 'application/json'
@@ -23,7 +26,7 @@ export class AuthService {
     signUp(username: string, password: string) {
         const events = [];
         return this.http
-            .post<Response>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions)
+            .post<Response>(`${this.apiUrl}/registration`, {username, password, events}, this.httpOptions);
     }
 
     signIn(username: string, password: string) {
@@ -42,4 +45,18 @@ export class AuthService {
         return localStorage.getItem('accessToken') != null;
     }
 
+    LogInByYandex(accessToken): Observable<any> {
+        return this.http.post(this.apiUrl + this.loginByYandexEndpoint, {token: accessToken})
+            .pipe(
+                tap(val => this.setSession(val))
+            );
+    }
+
+    get GetToken() {
+        return this._token;
+    }
+
+    set SetToken(value: string) {
+        this._token = value;
+    }
 }
