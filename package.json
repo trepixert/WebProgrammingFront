@@ -52,7 +52,7 @@
     "date-fns": "1.29.0",
     "angular-calendar": "0.27.20",
     "@ng-bootstrap/ng-bootstrap": "5.0.0",
-    "rrule": "2.6.2",
+    "rrule": "2.7.1",
     "calendar-utils": "0.3.3",
     "flatpickr": "4.6.2",
     "angularx-flatpickr": "6.1.0"
